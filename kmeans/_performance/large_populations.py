@@ -15,14 +15,16 @@ samples = [
     (16581375, 5)
 ]
 
+print "Generating random points"
+max_sample = max(sample[0] for sample in samples)
+points = random_points(max_sample)
+print "Random points generated"
 
 def run_test(n, k):
-    points = random_points(n)
-
+    points.set_len(n)
     t = timer()
     kmeans(points, k)
     elapsed = t()
-
     return elapsed
 
 def run_tests(tests, echo=False):
