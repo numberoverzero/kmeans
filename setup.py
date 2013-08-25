@@ -1,6 +1,7 @@
 from __future__ import print_function
 from setuptools import setup
 from setuptools.command.test import test as TestCommand
+from distutils.extension import Extension
 import io
 import os
 import sys
@@ -8,6 +9,11 @@ import sys
 import kmeans
 
 here = os.path.abspath(os.path.dirname(__file__))
+
+ckmeans = Extension('kmeans.kmeans',
+    sources = ['kmeans/_kmeans.c'],
+    extra_compile_args=['-O3']
+)
 
 def read(*filenames, **kwargs):
     encoding = kwargs.get('encoding', 'utf-8')
@@ -58,5 +64,6 @@ setup(
         ],
     extras_require={
         'testing': ['pytest'],
-    }
+    },
+    ext_modules = [ckmeans]
 )

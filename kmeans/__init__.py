@@ -8,7 +8,7 @@
 
 """
 
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 
 
 def kmeans(points, k, means=None):
@@ -16,12 +16,12 @@ def kmeans(points, k, means=None):
 
     :param points: (values, weight) tuples to find means of.
             value is a list of integer values.
-    :type points: list.
+    :type points: list
     :param k: number of means to calculate
-    :type k: int.
+    :type k: int
     :param means: initial means
-    :type means: list.
-    :rtype: list.
+    :type means: list
+    :rtype: list
 
     """
     pass
