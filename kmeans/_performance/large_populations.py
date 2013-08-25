@@ -7,7 +7,7 @@ samples = [
     (1920 * 1200,  5),
     (1920 * 1200, 15),
 
-    # Personal penchmarks
+    # Personal benchmarks
     (747116, 5),   # Unique pixels in 1920 x 1080 image
     (1095169, 5),  # Unique pixels in 15530 x 8591 image
 
