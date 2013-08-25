@@ -1,8 +1,7 @@
 from __future__ import print_function
-from setuptools import setup, find_packages
+from setuptools import setup
 from setuptools.command.test import test as TestCommand
 import io
-import codecs
 import os
 import sys
 
@@ -21,15 +20,15 @@ def read(*filenames, **kwargs):
 
 long_description = read('README.rst')
 
-class PyTest(TestCommand):
+class Tox(TestCommand):
     def finalize_options(self):
         TestCommand.finalize_options(self)
         self.test_args = []
         self.test_suite = True
 
     def run_tests(self):
-        import pytest
-        errcode = pytest.main(self.test_args)
+        import tox
+        errcode = tox.cmdline(self.test_args)
         sys.exit(errcode)
 
 setup(
@@ -38,9 +37,9 @@ setup(
     url='http://github.com/numberoverzero/kmeans/',
     license='MIT',
     author='Joe Cross',
-    tests_require=['pytest'],
+    tests_require=['pytest', 'tox'],
     install_requires=[],
-    cmdclass={'test': PyTest},
+    cmdclass={'test': Tox},
     author_email='joe.mcross@gmail.com',
     description='python wrapper for basic c implementation of kmeans',
     long_description=long_description,
