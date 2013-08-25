@@ -10,6 +10,7 @@ def run(*args, **kwargs):
 def clean():
     run("find . -name '*.so' -delete")
     run("rm -rf kmeans.egg-info")
+    run("rm -rf docs/_build/")
     run("rm -rf build/")
 
 @task('clean')
