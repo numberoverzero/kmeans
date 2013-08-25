@@ -6,12 +6,10 @@ import io
 import os
 import sys
 
-import kmeans
-
 here = os.path.abspath(os.path.dirname(__file__))
 
-ckmeans = Extension('kmeans.kmeans',
-    sources = ['kmeans/_kmeans.c'],
+ckmeans = Extension('kmeans._lib',
+    sources = ['kmeans/_lib.c'],
     extra_compile_args=['-O3']
 )
 
@@ -25,6 +23,7 @@ def read(*filenames, **kwargs):
     return sep.join(buf)
 
 long_description = read('README.rst')
+version = '0.1.2'
 
 class Tox(TestCommand):
     def finalize_options(self):
@@ -39,7 +38,7 @@ class Tox(TestCommand):
 
 setup(
     name='kmeans',
-    version=kmeans.__version__,
+    version=version,
     url='http://github.com/numberoverzero/kmeans/',
     license='MIT',
     author='Joe Cross',
