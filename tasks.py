@@ -24,3 +24,7 @@ def pypi():
 @task('clean', 'build')
 def test():
     run('tox')
+
+@task('clean', 'build')
+def benchmark():
+    run('python kmeans/_performance/large_populations.py')

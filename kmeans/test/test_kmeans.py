@@ -48,3 +48,14 @@ def test_two_points_two_centers():
     assert 2 ==  len(means)
     for value in values:
         assert value in means
+
+def test_two_points_with_weights():
+    real_mean = [20, 20, 20]
+    points = [
+        [(0, 0, 0), 1],
+        [(30, 30, 30), 2]
+    ]
+    k = 1
+    means = kmeans.kmeans(points, k)
+    assert 1 ==  len(means)
+    assert real_mean == means[0]
