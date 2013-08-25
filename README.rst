@@ -1,7 +1,7 @@
 kmeans
 ===================
-.. image:: https://secure.travis-ci.org/numberoverzero/kmeans.png?branch=develop
-   :target: http://travis-ci.org/numberoverzero/kmeans
+.. image:: https://travis-ci.org/numberoverzero/kmeans.png?branch=master
+   :target: https://travis-ci.org/numberoverzero/kmeans
 
 python wrapper for a basic c implementation of the k-means algorithm.
 
@@ -32,7 +32,7 @@ For example, finding two mean colors for a group of pixels::
         [(17, 31, 92), 5],
         # ... Lots more ...
     ]
-    
+
     mean_pixels = kmeans.kmeans(pixels, 2)
 
 In this case, the weights passed in may be the frequency of the pixels occuring in an image, or some preference to pull the means towards a color.
