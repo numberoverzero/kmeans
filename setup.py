@@ -23,7 +23,7 @@ def read(*filenames, **kwargs):
     return sep.join(buf)
 
 long_description = read('README.rst')
-version = '0.2.0'
+version = '0.2.1'
 
 class Tox(TestCommand):
     def finalize_options(self):
