@@ -3,52 +3,67 @@
 #include <string.h> /* memset */
 #include <unistd.h> /* close */
 
+int max(int x, int y) { return x > y ? x : y; }
+int min(int x, int y) { return x < y ? x : y; }
+int clamp(int x, int low, int high) { return max(low, min(x, high)); }
+
 typedef struct {
     int r, g, b;
     int cluster;
     int weight;
 } Point;
 
-int max(int x, int y) { return x > y ? x : y; }
-int min(int x, int y) { return x < y ? x : y; }
-int clamp(int x, int low, int high) { return max(low, min(x, high)); }
+void Point_initialize(Point* points, int npoints)
+{
+    int i;
+    for(i=0; i<npoints; ++i)
+    {
+        points[i].r = 0;
+        points[i].g = 0;
+        points[i].b = 0;
+        points[i].weight = 0;
+    }
+}
 
-int distance2(Point* p1, Point* p2)
+void Point_normalize(Point* point)
+{
+    point->r /= point->weight;
+    point->g /= point->weight;
+    point->b /= point->weight;
+}
+
+void Point_copy(Point* point, Point* other)
+{
+    // Don't copy cluster or weight
+    point->r = other->r;
+    point->g = other->g;
+    point->b = other->b;
+}
+void Point_add(Point* point, Point* other)
+{
+    // Multiply by weight since we're "expanding" the other point
+    int w = other->weight;
+    point->r += w *  other->r;
+    point->g += w *  other->g;
+    point->b += w *  other->b;
+    point->weight += w;
+}
+
+int Point_distance(Point* p1, Point* p2)
 {
     return (p1->r - p2->r) * (p1->r - p2->r)
          + (p1->g - p2->g) * (p1->g - p2->g)
          + (p1->b - p2->b) * (p1->b - p2->b);
 }
 
-/* Updates the center point based on the average of the cluster points
-   and returns the diff between old center and new center */
-int update_center(Point *center, Point *points, int npoints)
+void kmeans_init_centers(Point *centers, int ncenters)
 {
-    int total_w = 0;
-    long r = 0, g = 0, b = 0;
-    int cluster = center->cluster;
-    int i;
-    for(i=0; i<npoints; ++i)
+    int j;
+    for(j=0; j<ncenters; ++j)
     {
-        Point p = points[i];
-        if(p.cluster != cluster) continue;
-        int w = p.weight;
-        total_w += w;
-        r += w * p.r;
-        g += w * p.g;
-        b += w * p.b;
+        centers[j].weight = 1;
+        centers[j].cluster = j;
     }
-    Point new_center = {
-        .r = r/total_w,
-        .g = g/total_w,
-        .b = b/total_w,
-    };
-    int diff = distance2(center, &new_center);
-    center->r = new_center.r;
-    center->g = new_center.g;
-    center->b = new_center.b;
-    center->weight = 1;
-    return diff;
 }
 
 void kmeans_assign(Point *points, int npoints, Point *centers, int ncenters)
@@ -59,7 +74,7 @@ void kmeans_assign(Point *points, int npoints, Point *centers, int ncenters)
         int min_dist = INT_MAX;
         for(j=0; j<ncenters; ++j)
         {
-            int dist = distance2(&points[i], &centers[j]);
+            int dist = Point_distance(&points[i], &centers[j]);
             if(dist < min_dist)
             {
                 min_dist = dist;
@@ -72,44 +87,28 @@ void kmeans_assign(Point *points, int npoints, Point *centers, int ncenters)
 int kmeans_update(Point *points, int npoints, Point *centers, int ncenters)
 {
     int diff = 0;
-
-    int total_w[ncenters];
-    memset(total_w, 0, sizeof total_w);
-
-    long r[ncenters], g[ncenters], b[ncenters];
-    memset(r, 0, sizeof r);
-    memset(g, 0, sizeof g);
-    memset(b, 0, sizeof b);
+    Point temp_centers[ncenters];
+    Point_initialize(temp_centers, ncenters);
 
     int i, j;
     for(i=0; i<npoints; ++i)
     {
-        Point p = points[i];
-        int c = p.cluster;
-        int w = p.weight;
-        total_w[c] += w;
-        r[c] += w * p.r;
-        g[c] += w * p.g;
-        b[c] += w * p.b;
+        j = points[i].cluster;
+        Point_add(&temp_centers[j], &points[i]);
     }
+
     for(j=0; j<ncenters; ++j)
     {
-        Point new_center = {
-            .r = r[j]/total_w[j],
-            .g = g[j]/total_w[j],
-            .b = b[j]/total_w[j],
-        };
-        diff = max(diff, distance2(&centers[j], &new_center));
-        centers[j].r = new_center.r;
-        centers[j].g = new_center.g;
-        centers[j].b = new_center.b;
-        centers[j].weight = 1;
+        Point_normalize(&temp_centers[j]);
+        diff = max(diff, Point_distance(&centers[j], &temp_centers[j]));
+        Point_copy(&centers[j], &temp_centers[j]);
     }
     return diff;
 }
 
 void kmeans(Point *points, int npoints, Point *centers, int ncenters)
 {
+    kmeans_init_centers(centers, ncenters);
     while(1)
     {
         kmeans_assign(points, npoints, centers, ncenters);
