@@ -21,9 +21,9 @@ Usage
 ::
 
     import kmeans
-    means = kmeans.kmeans(population, k)
+    means = kmeans.kmeans(points, k)
 
-``population`` should be a list of tuples of the form ``(data, weight)`` where ``data`` is a list.
+``points`` should be a list of tuples of the form ``(data, weight)`` where ``data`` is a list.
 
 For example, finding two mean colors for a group of pixels::
 
