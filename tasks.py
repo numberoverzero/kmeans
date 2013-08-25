@@ -21,6 +21,6 @@ def build():
 def pypi():
     run('python setup.py sdist upload')
 
-@task('clean')
+@task('clean', 'build')
 def test():
     run('tox')
