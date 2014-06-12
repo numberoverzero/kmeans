@@ -11,11 +11,6 @@ Installation
 
     pip install kmeans
 
-Documentation
-===================
-`kmeans documentation <https://kmeans.readthedocs.org/en/latest/>`_
-
-
 Usage
 ===================
 ::
@@ -23,7 +18,7 @@ Usage
     import kmeans
     means = kmeans.kmeans(points, k)
 
-``points`` should be a list of tuples of the form ``(data, weight)`` where ``data`` is a list.
+``points`` should be a list of tuples of the form ``(data, weight)`` where ``data`` is a list with length 3.
 
 For example, finding two mean colors for a group of pixels::
 

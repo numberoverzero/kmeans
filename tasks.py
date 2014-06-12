@@ -1,10 +1,7 @@
 from invoke import task, run
+from functools import partial
+run = partial(run, echo=True)
 
-_run = run
-
-def run(*args, **kwargs):
-    kwargs.update(echo=True)
-    return _run(*args, **kwargs)
 
 @task
 def clean():
@@ -13,18 +10,22 @@ def clean():
     run("rm -rf docs/_build/")
     run("rm -rf build/")
 
-@task('clean')
+
+@task(clean)
 def build():
     run("python setup.py develop")
 
-@task('clean')
+
+@task(clean)
 def pypi():
     run('python setup.py sdist upload')
 
-@task('clean', 'build')
+
+@task(build)
 def test():
     run('tox')
 
-@task('clean', 'build')
+
+@task(build)
 def benchmark():
-    run('python kmeans/_performance/large_populations.py')
+    run('python kmeans/performance.py')
