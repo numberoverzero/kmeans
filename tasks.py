@@ -28,4 +28,4 @@ def test():
 
 @task(build)
 def benchmark():
-    run('python kmeans/performance.py')
+    run('python performance.py')

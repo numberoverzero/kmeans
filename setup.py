@@ -5,8 +5,8 @@ from distutils.extension import Extension
 
 here = os.path.abspath(os.path.dirname(__file__))
 ckmeans = Extension(
-    'kmeans._lib',
-    sources=['kmeans/_lib.c'],
+    '_lib',
+    sources=['_lib.c'],
     extra_compile_args=['-O3', '-std=c99']
 )
 
@@ -33,7 +33,6 @@ setup(
     author_email='joe.mcross@gmail.com',
     description='python wrapper for basic c implementation of kmeans',
     long_description=long_description,
-    packages=['kmeans'],
     include_package_data=True,
     platforms='any',
     classifiers=[

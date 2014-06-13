@@ -50,58 +50,57 @@ class Center(Structure):
     ]
 
 
-def _kmeans(*, points, k, means, tolerance, max_iterations):
+def _kmeans(*, points, k, centers, tolerance, max_iterations):
     # Load c module
     global _lib
     if not _lib:
         _here = here(__file__)
         _lib = ctypes.CDLL(so_path(_here, '_lib'))
 
-    # Format/Generate means
-    if means:
-        means = [(m, 1) for m in means]
+    if centers:
+        if k != len(centers):
+            raise ValueError(
+                "Provided {} centers but k is {}".format(len(centers), k))
     else:
-        means = random.sample(points, k)
-        print("Random Means:")
-        print("\n".join(str(m) for m in means))
+        centers = random.sample(points, k)
 
-    kpoints_array = Center * k
-    lib_means = kpoints_array()
-    for i, center in enumerate(means):
+    pcenters = (Center * k)()
+    for i, center in enumerate(centers):
         (r, g, b), count = center
-        lib_means[i] = Center(r=r, g=g, b=b, count=count)
-    pmeans = byref(lib_means)
+        pcenters[i] = Center(r=r, g=g, b=b, count=count)
+                        # Save a reference to the array so we can read out
+    centers = pcenters  # the results
+    pcenters = byref(pcenters)
 
     # Generate points
-    npoints = len(points)
-    npoints_array = Point * npoints
-    lib_points = npoints_array()
+    n = len(points)
+    ppoints = (Point * n)()
     for i, point in enumerate(points):
         (r, g, b), count = point
-        lib_points[i] = Point(r=r, g=g, b=b, center=-1, count=count)
-    ppoints = byref(lib_points)
+        ppoints[i] = Point(r=r, g=g, b=b, center=-1, count=count)
+    ppoints = byref(ppoints)
 
-    # Compute means
-    _lib.kmeans(ppoints, npoints, pmeans, k, tolerance, max_iterations)
+    # Compute centers
+    _lib.kmeans(ppoints, n, pcenters, k, tolerance, max_iterations)
 
     # Translate
-    return [[mean.r, mean.g, mean.b] for mean in lib_means]
+    return [[center.r, center.g, center.b] for center in centers]
 
 
-def kmeans(points, k, means=None, tolerance=1, max_iterations=0):
-    """Return a list of *k* means.  Initial means are optional.
+def kmeans(points, k, centers=None, tolerance=1, max_iterations=0):
+    """Return a list of *k* centers (means).  Initial centers are optional.
 
-    :param points: (values, weight) tuples to find means of.
+    :param points: (values, weight) tuples to find centers of.
             value is a list of integer values.
     :type points: list
 
-    :param k: number of means to calculate
+    :param k: number of centers to calculate
     :type k: int
 
-    :param means: initial means, leave blank to randomly select
-    :type means: list
+    :param centers: initial centers, leave blank to randomly select
+    :type centers: list
 
-    :param tolerance: maximum delta to consider the means stable
+    :param tolerance: maximum delta to consider the centers stable
     :type tolerance: int
 
     :param max_iterations: maximum assign/update iterations.  0 to loop until
@@ -111,5 +110,5 @@ def kmeans(points, k, means=None, tolerance=1, max_iterations=0):
     :rtype: list
 
     """
-    return _kmeans(points=points, k=k, means=means,
+    return _kmeans(points=points, k=k, centers=centers,
                    tolerance=tolerance, max_iterations=max_iterations)
