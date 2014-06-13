@@ -7,7 +7,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 ckmeans = Extension(
     'kmeans._lib',
     sources=['kmeans/_lib.c'],
-    extra_compile_args=['-O3']
+    extra_compile_args=['-O3', '-std=c99']
 )
 
 

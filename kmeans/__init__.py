@@ -10,9 +10,9 @@ import os
 import ctypes
 import random
 import sysconfig
-from ctypes import Structure, c_int, byref
+from ctypes import Structure, c_uint, c_ulong, byref
 
-__version__ = version = '0.3.1'
+__version__ = version = '0.3.0'
 __all__ = ['kmeans', 'version']
 _lib = None
 
@@ -33,11 +33,11 @@ def here(__file__):
 
 class Point(Structure):
     _fields_ = [
-        ('r', c_int),
-        ('g', c_int),
-        ('b', c_int),
-        ('cluster', c_int),
-        ('weight', c_int)
+        ('r', c_ulong, 64),
+        ('g', c_ulong, 64),
+        ('b', c_ulong, 64),
+        ('cluster', c_uint, 32),
+        ('weight', c_uint, 32)
     ]
 
 
@@ -53,6 +53,8 @@ def _kmeans(*, points, k, means, tolerance, max_iterations):
         means = [(m, 1) for m in means]
     else:
         means = random.sample(points, k)
+        print("Random Means:")
+        print("\n".join(str(m) for m in means))
 
     kpoints_array = Point * k
     lib_means = kpoints_array()
@@ -77,7 +79,7 @@ def _kmeans(*, points, k, means, tolerance, max_iterations):
     return [[mean.r, mean.g, mean.b] for mean in lib_means]
 
 
-def kmeans(points, k, means=None, tolerance=0, max_iterations=-1):
+def kmeans(points, k, means=None, tolerance=1, max_iterations=0):
     """Return a list of *k* means.  Initial means are optional.
 
     :param points: (values, weight) tuples to find means of.

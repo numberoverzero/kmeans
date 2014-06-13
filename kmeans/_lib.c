@@ -1,14 +1,19 @@
-#include <stdio.h>
-#include <stdint.h>
+// Removable?
+#include <inttypes.h>
 #include <limits.h>
+#include <stdio.h>
 #include <string.h> /* memset */
+
+// Necessary?
+#include <stdint.h>
 #include <unistd.h> /* close */
+
 
 
 // UTIL
 
-int max(int x, int y) { return x > y ? x : y; }
-int clamp(int x, int low, int high) {
+uint32_t max(uint32_t x, uint32_t y) { return x > y ? x : y; }
+uint32_t clamp(uint32_t x, uint32_t low, uint32_t high) {
     if(x < low) {
         return low;
     }
@@ -22,26 +27,25 @@ int clamp(int x, int low, int high) {
 // POINT
 
 typedef struct {
-    int r, g, b;
-    int cluster;
-    int weight;
+    uint64_t r, g, b;
+    uint32_t cluster;
+    uint32_t weight;
 } Point;
 
-void Point_initialize(Point* points, int npoints)
+void Points_zero(Point* points, uint32_t npoints)
 {
-    int i;
-    for(i=0; i<npoints; ++i)
+    for(npoints--; npoints > 0; npoints--)
     {
-        points[i].r = 0;
-        points[i].g = 0;
-        points[i].b = 0;
-        points[i].weight = 0;
+        points[npoints].r = 0;
+        points[npoints].g = 0;
+        points[npoints].b = 0;
+        points[npoints].weight = 0;
     }
 }
 
 void Point_normalize(Point* point)
 {
-    int w = point->weight;
+    uint32_t w = point->weight;
     if(w == 0) {
         return;
     }
@@ -61,14 +65,14 @@ void Point_copy(Point* point, Point* other)
 void Point_add(Point* point, Point* other)
 {
     // Multiply by weight since we're "expanding" the other point
-    int w = other->weight;
+    uint32_t w = other->weight;
     point->r += w * other->r;
     point->g += w * other->g;
     point->b += w * other->b;
     point->weight += w;
 }
 
-int Point_distance(Point* p1, Point* p2)
+uint64_t Point_distance(Point* p1, Point* p2)
 {
     return (p1->r - p2->r) * (p1->r - p2->r)
          + (p1->g - p2->g) * (p1->g - p2->g)
@@ -78,25 +82,24 @@ int Point_distance(Point* p1, Point* p2)
 
 // KMEANS
 
-void kmeans_init_centers(Point *centers, int ncenters)
+void kmeans_init_centers(Point *centers, uint32_t ncenters)
 {
-    int j;
-    for(j=0; j<ncenters; ++j)
+    for(uint32_t j = 0; j < ncenters; ++j)
     {
         centers[j].weight = 1;
         centers[j].cluster = j;
     }
 }
 
-void kmeans_assign(Point *points, int npoints, Point *centers, int ncenters)
+void kmeans_assign(Point *points, uint64_t npoints,
+    Point *centers, uint32_t ncenters)
 {
-    int i, j;
-    for(i=0; i<npoints; ++i)
+    for(uint64_t i = 0; i < npoints; ++i)
     {
-        int min_dist = INT_MAX;
-        for(j=0; j<ncenters; ++j)
+        uint64_t min_dist = UINT64_MAX;
+        for(uint32_t j = 0; j < ncenters; ++j)
         {
-            int dist = Point_distance(&points[i], &centers[j]);
+            uint64_t dist = Point_distance(&points[i], &centers[j]);
             if(dist < min_dist)
             {
                 min_dist = dist;
@@ -106,20 +109,20 @@ void kmeans_assign(Point *points, int npoints, Point *centers, int ncenters)
     }
 }
 
-int kmeans_update(Point *points, int npoints,
-        Point *centers, Point *temp_centers, int ncenters)
+uint64_t kmeans_update(Point *points, uint64_t npoints,
+        Point *centers, Point *temp_centers, uint32_t ncenters)
 {
-    int diff = 0;
-    Point_initialize(temp_centers, ncenters);
+    uint64_t diff = 0;
+    Points_zero(temp_centers, ncenters);
 
-    int i, j;
-    for(i=0; i<npoints; ++i)
+    uint32_t j;
+    for(uint64_t i = 0; i < npoints; ++i)
     {
         j = points[i].cluster;
         Point_add(&temp_centers[j], &points[i]);
     }
 
-    for(j=0; j<ncenters; ++j)
+    for(j = 0; j < ncenters; ++j)
     {
         Point_normalize(&temp_centers[j]);
         diff = max(diff, Point_distance(&centers[j], &temp_centers[j]));
@@ -128,10 +131,11 @@ int kmeans_update(Point *points, int npoints,
     return diff;
 }
 
-void kmeans(Point *points, int npoints, Point *centers,
-            int ncenters, int tolerance, int max_iterations)
+void kmeans(Point *points, uint64_t npoints, Point *centers,
+            uint32_t ncenters, uint32_t tolerance, uint32_t max_iterations)
 {
-    int delta, remaining_iterations;
+    uint32_t delta;
+    uint32_t remaining_iterations;
     Point temp_centers[ncenters];
 
     if(max_iterations <= 0) {
@@ -150,10 +154,10 @@ void kmeans(Point *points, int npoints, Point *centers,
         remaining_iterations += delta;
 
         kmeans_assign(points, npoints, centers, ncenters);
-        int diff = kmeans_update(points, npoints,
+        uint64_t diff = kmeans_update(points, npoints,
             centers, temp_centers, ncenters);
 
-        printf("%6d || %d || %3d\n", diff, tolerance, remaining_iterations);
+        printf("%12zu || %3u || %3u\n", diff, tolerance, remaining_iterations);
         if(diff <= tolerance || remaining_iterations < 1) return;
     }
 }
