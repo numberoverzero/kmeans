@@ -14,15 +14,15 @@ def test_single_point():
 
 def test_single_point_with_guess():
     value = [0, 10, 20]
-    guess = [-20, 50, 100]
+    guess = [(-20, 50, 100), 1]
     points = [
         [value, 1]
     ]
     k = 1
-    means = [
+    centers = [
         guess
     ]
-    means = kmeans(points, k, means=means)
+    means = kmeans(points, k, centers=centers)
     assert 1 == len(means)
     assert value == means[0]
 
