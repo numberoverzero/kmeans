@@ -14,7 +14,7 @@ from ctypes import Structure, c_uint, c_ulong, byref
 
 __version__ = version = '0.3.0'
 __all__ = ['kmeans', 'version']
-_lib = None
+lib = None
 
 
 def so_path(dir, filename):
@@ -52,10 +52,10 @@ class Center(Structure):
 
 def _kmeans(*, points, k, centers, tolerance, max_iterations):
     # Load c module
-    global _lib
-    if not _lib:
+    global lib
+    if not lib:
         _here = here(__file__)
-        _lib = ctypes.CDLL(so_path(_here, '_lib'))
+        lib = ctypes.CDLL(so_path(_here, 'lib'))
 
     if centers:
         if k != len(centers):
@@ -81,7 +81,7 @@ def _kmeans(*, points, k, centers, tolerance, max_iterations):
     ppoints = byref(ppoints)
 
     # Compute centers
-    _lib.kmeans(ppoints, n, pcenters, k, tolerance, max_iterations)
+    lib.kmeans(ppoints, n, pcenters, k, tolerance, max_iterations)
 
     # Translate
     return [[center.r, center.g, center.b] for center in centers]

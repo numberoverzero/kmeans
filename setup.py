@@ -5,8 +5,8 @@ from distutils.extension import Extension
 
 here = os.path.abspath(os.path.dirname(__file__))
 ckmeans = Extension(
-    '_lib',
-    sources=['_lib.c'],
+    'lib',
+    sources=['lib.c'],
     extra_compile_args=['-O3', '-std=c99']
 )
 
