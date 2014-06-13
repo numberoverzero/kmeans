@@ -33,11 +33,20 @@ def here(__file__):
 
 class Point(Structure):
     _fields_ = [
+        ('r', c_uint, 8),
+        ('g', c_uint, 8),
+        ('b', c_uint, 8),
+        ('center', c_uint, 32),
+        ('count', c_uint, 32)
+    ]
+
+
+class Center(Structure):
+    _fields_ = [
         ('r', c_ulong, 64),
         ('g', c_ulong, 64),
         ('b', c_ulong, 64),
-        ('cluster', c_uint, 32),
-        ('weight', c_uint, 32)
+        ('count', c_uint, 32)
     ]
 
 
@@ -56,11 +65,11 @@ def _kmeans(*, points, k, means, tolerance, max_iterations):
         print("Random Means:")
         print("\n".join(str(m) for m in means))
 
-    kpoints_array = Point * k
+    kpoints_array = Center * k
     lib_means = kpoints_array()
     for i, center in enumerate(means):
         (r, g, b), count = center
-        lib_means[i] = Point(r=r, g=g, b=b, cluster=i, weight=count)
+        lib_means[i] = Center(r=r, g=g, b=b, count=count)
     pmeans = byref(lib_means)
 
     # Generate points
@@ -69,7 +78,7 @@ def _kmeans(*, points, k, means, tolerance, max_iterations):
     lib_points = npoints_array()
     for i, point in enumerate(points):
         (r, g, b), count = point
-        lib_points[i] = Point(r=r, g=g, b=b, cluster=-1, weight=count)
+        lib_points[i] = Point(r=r, g=g, b=b, center=-1, count=count)
     ppoints = byref(lib_points)
 
     # Compute means
