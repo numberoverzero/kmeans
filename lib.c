@@ -1,6 +1,6 @@
 #include <stdint.h>
 
-uint64_t max(uint32_t x, uint32_t y) { return x > y ? x : y; }
+uint64_t max(uint64_t x, uint64_t y) { return x > y ? x : y; }
 
 
 typedef struct {
@@ -18,8 +18,7 @@ typedef struct {
 
 void Centers_zero(Center* centers, uint32_t n)
 {
-    for(n--; n > 0; n--)
-    {
+    for (n--; n > 0; n--) {
         centers[n].r = 0;
         centers[n].g = 0;
         centers[n].b = 0;
@@ -32,7 +31,7 @@ void Center_normalize(Center* center)
     // No need to change center->count since the center will
     // get cleared before it's used again
     uint32_t w = center->count;
-    if(w == 0) {
+    if (w == 0) {
         return;
     }
     center->r /= w;
@@ -77,14 +76,11 @@ uint64_t PointCenter_distance(Point* p, Center* c)
 void kmeans_assign(Point *points, uint64_t npoints,
     Center *centers, uint32_t ncenters)
 {
-    for(uint64_t i = 0; i < npoints; ++i)
-    {
+    for (uint64_t i = 0; i < npoints; ++i) {
         uint64_t min_dist = UINT64_MAX;
-        for(uint32_t j = 0; j < ncenters; ++j)
-        {
+        for (uint32_t j = 0; j < ncenters; ++j) {
             uint64_t dist = PointCenter_distance(&points[i], &centers[j]);
-            if(dist < min_dist)
-            {
+            if (dist < min_dist) {
                 min_dist = dist;
                 points[i].center = j;
             }
@@ -99,14 +95,12 @@ uint64_t kmeans_update(Point *points, uint64_t npoints,
     uint64_t diff = 0;
 
     Centers_zero(temp_centers, ncenters);
-    for(uint64_t i = 0; i < npoints; ++i)
-    {
+    for (uint64_t i = 0; i < npoints; ++i) {
         j = points[i].center;
         Center_accumulate(&temp_centers[j], &points[i]);
     }
 
-    for(j = 0; j < ncenters; ++j)
-    {
+    for (j = 0; j < ncenters; ++j) {
         Center_normalize(&temp_centers[j]);
         diff = max(diff, CenterCenter_distance(&centers[j], &temp_centers[j]));
         Center_copy(&centers[j], &temp_centers[j]);
@@ -120,7 +114,7 @@ void kmeans(Point *points, uint64_t npoints, Center *centers,
     uint32_t delta, remaining_iterations;
     Center temp_centers[ncenters];
 
-    if(max_iterations <= 0) {
+    if (max_iterations <= 0) {
         delta = 0;
         remaining_iterations = 1;
     } else {
@@ -128,14 +122,13 @@ void kmeans(Point *points, uint64_t npoints, Center *centers,
         remaining_iterations = max_iterations;
     }
 
-    while(remaining_iterations > 0)
-    {
+    while (remaining_iterations > 0) {
         remaining_iterations += delta;
 
         kmeans_assign(points, npoints, centers, ncenters);
         uint64_t diff = kmeans_update(points, npoints,
             centers, temp_centers, ncenters);
 
-        if(diff <= tolerance || remaining_iterations < 1) return;
+        if (diff <= tolerance || remaining_iterations < 1) return;
     }
 }
