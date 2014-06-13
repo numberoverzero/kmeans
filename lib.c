@@ -18,11 +18,11 @@ typedef struct {
 
 void Centers_zero(Center* centers, uint32_t n)
 {
-    for (n--; n > 0; n--) {
-        centers[n].r = 0;
-        centers[n].g = 0;
-        centers[n].b = 0;
-        centers[n].count = 0;
+    for (uint32_t i = 0; i < n; i++) {
+        centers[i].r = 0;
+        centers[i].g = 0;
+        centers[i].b = 0;
+        centers[i].count = 0;
     }
 }
 
@@ -118,12 +118,12 @@ void kmeans(Point *points, uint64_t npoints, Center *centers,
         delta = 0;
         remaining_iterations = 1;
     } else {
-        delta = -1;
+        delta = 1;
         remaining_iterations = max_iterations;
     }
 
     while (remaining_iterations > 0) {
-        remaining_iterations += delta;
+        remaining_iterations -= delta;
 
         kmeans_assign(points, npoints, centers, ncenters);
         uint64_t diff = kmeans_update(points, npoints,
