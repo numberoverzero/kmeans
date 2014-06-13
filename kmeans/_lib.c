@@ -1,13 +1,4 @@
-// Removable?
-#include <inttypes.h>
-#include <limits.h>
-#include <stdio.h>
-#include <string.h> /* memset */
-
-// Necessary?
 #include <stdint.h>
-#include <unistd.h> /* close */
-
 
 
 // UTIL
@@ -157,7 +148,6 @@ void kmeans(Point *points, uint64_t npoints, Point *centers,
         uint64_t diff = kmeans_update(points, npoints,
             centers, temp_centers, ncenters);
 
-        printf("%12zu || %3u || %3u\n", diff, tolerance, remaining_iterations);
         if(diff <= tolerance || remaining_iterations < 1) return;
     }
 }
