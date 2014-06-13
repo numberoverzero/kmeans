@@ -12,7 +12,7 @@ import random
 import sysconfig
 from ctypes import Structure, c_uint, c_ulong, byref
 
-__version__ = version = '0.3.0'
+__version__ = version = '0.3.1'
 __all__ = ['kmeans', 'version']
 lib = None
 

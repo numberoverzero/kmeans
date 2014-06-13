@@ -20,7 +20,7 @@ Usage
 
 ``points`` should be a list of tuples of the form ``(data, weight)`` where ``data`` is a list with length 3.
 
-For example, finding two mean colors for a group of pixels::
+For example, finding four mean colors for a group of pixels::
 
     pixels = [
         [(15, 20, 25), 1],  # [(r,g,b), count]
@@ -28,9 +28,19 @@ For example, finding two mean colors for a group of pixels::
         # ... Lots more ...
     ]
 
-    mean_pixels = kmeans.kmeans(pixels, 2)
+    centers = kmeans.kmeans(pixels, 4)
 
 In this case, the weights passed in may be the frequency of the pixels occuring in an image, or some preference to pull the means towards a color.
+
+Limitations
+===================
+
+All values must be non-negative integers, with the following restrictions::
+
+    r, g, b        [0, 255]             (uint8_t)
+    count          [0, 4294967295]      (uint32_t)
+    maximum points 18446744073709551615 (uint64_t)
+    maximum means  4294967295           (uint32_t)
 
 Inspiration
 ===================
