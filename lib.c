@@ -3,20 +3,20 @@
 uint64_t max(uint64_t x, uint64_t y) { return x > y ? x : y; }
 
 
-typedef struct {
+struct point {
     uint8_t r, g, b;
     uint32_t center;
     uint32_t count;
-} Point;
+};
 
 
-typedef struct {
+struct center {
     uint64_t r, g, b;
     uint32_t count;
-} Center;
+};
 
 
-void Centers_zero(Center* centers, uint32_t n)
+void Centers_zero(struct center* centers, uint32_t n)
 {
     for (uint32_t i = 0; i < n; i++) {
         centers[i].r = 0;
@@ -26,7 +26,7 @@ void Centers_zero(Center* centers, uint32_t n)
     }
 }
 
-void Center_normalize(Center* center)
+void Center_normalize(struct center* center)
 {
     // No need to change center->count since the center will
     // get cleared before it's used again
@@ -39,32 +39,32 @@ void Center_normalize(Center* center)
     center->b /= w;
 }
 
-void Center_copy(Center* center, Center* other)
+void Center_copy(struct center* dst, struct center* other)
 {
     // Don't copy center count
-    center->r = other->r;
-    center->g = other->g;
-    center->b = other->b;
+    dst->r = other->r;
+    dst->g = other->g;
+    dst->b = other->b;
 }
 
-void Center_accumulate(Center* center, Point* point)
+void Center_accumulate(struct center* c, struct point* p)
 {
     // Multiply by count since we're "expanding" the other point
-    uint32_t c = point->count;
-    center->r += c * point->r;
-    center->g += c * point->g;
-    center->b += c * point->b;
-    center->count += c;
+    uint32_t c = p->count;
+    c->r += c * p->r;
+    c->g += c * p->g;
+    c->b += c * p->b;
+    c->count += c;
 }
 
-uint64_t CenterCenter_distance(Center* c1, Center* c2)
+uint64_t CenterCenter_distance(struct center* c1, struct center* c2)
 {
     // count does not impact distance
     return (c1->r - c2->r) * (c1->r - c2->r)
          + (c1->g - c2->g) * (c1->g - c2->g)
          + (c1->b - c2->b) * (c1->b - c2->b);
 }
-uint64_t PointCenter_distance(Point* p, Center* c)
+uint64_t PointCenter_distance(struct point* p, struct center* c)
 {
     // count does not impact distance
     return (p->r - c->r) * (p->r - c->r)
@@ -73,8 +73,8 @@ uint64_t PointCenter_distance(Point* p, Center* c)
 }
 
 
-void kmeans_assign(Point *points, uint64_t npoints,
-    Center *centers, uint32_t ncenters)
+void kmeans_assign(struct point *points, uint64_t npoints,
+    struct center *centers, uint32_t ncenters)
 {
     for (uint64_t i = 0; i < npoints; ++i) {
         uint64_t min_dist = UINT64_MAX;
@@ -88,8 +88,8 @@ void kmeans_assign(Point *points, uint64_t npoints,
     }
 }
 
-uint64_t kmeans_update(Point *points, uint64_t npoints,
-        Center *centers, Center *temp_centers, uint32_t ncenters)
+uint64_t kmeans_update(struct point *points, uint64_t npoints,
+        struct center *centers, struct center *temp_centers, uint32_t ncenters)
 {
     uint32_t j;
     uint64_t diff = 0;
@@ -108,7 +108,7 @@ uint64_t kmeans_update(Point *points, uint64_t npoints,
     return diff;
 }
 
-void kmeans(Point *points, uint64_t npoints, Center *centers,
+void kmeans(struct point *points, uint64_t npoints, struct center *centers,
             uint32_t ncenters, uint32_t tolerance, uint32_t max_iterations)
 {
     uint32_t delta, remaining_iterations;
