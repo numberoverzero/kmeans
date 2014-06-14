@@ -16,7 +16,8 @@ struct center {
 };
 
 
-void centers_zero(struct center* centers, uint32_t n) {
+void centers_zero(struct center *centers, uint32_t n)
+{
     for (uint32_t i = 0; i < n; i++) {
         centers[i].r = 0;
         centers[i].g = 0;
@@ -25,10 +26,12 @@ void centers_zero(struct center* centers, uint32_t n) {
     }
 }
 
-void center_normalize(struct center* center) {
-    // No need to change center->count since the center will
-    // get cleared before it's used again
+void center_normalize(struct center *center)
+{
+    /* No need to change center->count since the center will
+       get cleared before it's used again */
     uint32_t w = center->count;
+
     if (w == 0) {
         return;
     }
@@ -37,43 +40,53 @@ void center_normalize(struct center* center) {
     center->b /= w;
 }
 
-void center_copy(struct center* dst, struct center* other) {
-    // Don't copy center count
+void center_copy(struct center *dst, struct center *other)
+{
+    /* Don't copy center count */
     dst->r = other->r;
     dst->g = other->g;
     dst->b = other->b;
 }
 
-void center_accumulate(struct center* c, struct point* p) {
-    // Multiply by count since we're "expanding" the other point
+void center_accumulate(struct center *c, struct point *p)
+{
+    /* Multiply by count since we're "expanding" the other point */
     uint32_t c = p->count;
+
     c->r += c * p->r;
     c->g += c * p->g;
     c->b += c * p->b;
     c->count += c;
 }
 
-uint64_t center_center_distance(struct center* c1, struct center* c2) {
-    // count does not impact distance
+uint64_t center_center_distance(struct center *c1, struct center *c2)
+{
+    /* count does not impact distance */
     return (c1->r - c2->r) * (c1->r - c2->r)
          + (c1->g - c2->g) * (c1->g - c2->g)
          + (c1->b - c2->b) * (c1->b - c2->b);
 }
 
-uint64_t point_center_distance(struct point* p, struct center* c) {
-    // count does not impact distance
+uint64_t point_center_distance(struct point *p, struct center *c)
+{
+    /* count does not impact distance */
     return (p->r - c->r) * (p->r - c->r)
          + (p->g - c->g) * (p->g - c->g)
          + (p->b - c->b) * (p->b - c->b);
 }
 
 
-void kmeans_assign(struct point *points, uint64_t npoints,
-    struct center *centers, uint32_t ncenters) {
+void kmeans_assign(
+    struct point *points, uint64_t npoints,
+    struct center *centers, uint32_t ncenters)
+{
+
     for (uint64_t i = 0; i < npoints; ++i) {
         uint64_t min_dist = UINT64_MAX;
+
         for (uint32_t j = 0; j < ncenters; ++j) {
-            uint64_t dist = point_center_distance(&points[i], &centers[j]);
+            uint64_t dist =
+                point_center_distance(&points[i], &centers[j]);
             if (dist < min_dist) {
                 min_dist = dist;
                 points[i].center = j;
@@ -82,8 +95,11 @@ void kmeans_assign(struct point *points, uint64_t npoints,
     }
 }
 
-uint64_t kmeans_update(struct point *points, uint64_t npoints,
-        struct center *centers, struct center *temp_centers, uint32_t ncenters) {
+uint64_t kmeans_update(
+    struct point *points, uint64_t npoints,
+    struct center *centers, struct center *temp_centers,
+    uint32_t ncenters)
+{
     uint32_t j;
     uint64_t diff = 0;
 
@@ -95,14 +111,20 @@ uint64_t kmeans_update(struct point *points, uint64_t npoints,
 
     for (j = 0; j < ncenters; ++j) {
         center_normalize(&temp_centers[j]);
-        diff = max(diff, center_center_distance(&centers[j], &temp_centers[j]));
+        diff = max(
+            diff,
+            center_center_distance(&centers[j], &temp_centers[j])
+        );
         center_copy(&centers[j], &temp_centers[j]);
     }
     return diff;
 }
 
-void kmeans(struct point *points, uint64_t npoints, struct center *centers,
-            uint32_t ncenters, uint32_t tolerance, uint32_t max_iterations) {
+void kmeans(
+    struct point *points, uint64_t npoints,
+    struct center *centers, uint32_t ncenters,
+    uint32_t tolerance, uint32_t max_iterations)
+{
     uint32_t delta, remaining_iterations;
     struct center temp_centers[ncenters];
 
@@ -121,6 +143,8 @@ void kmeans(struct point *points, uint64_t npoints, struct center *centers,
         uint64_t diff = kmeans_update(points, npoints,
             centers, temp_centers, ncenters);
 
-        if (diff <= tolerance || remaining_iterations < 1) return;
+        if (diff <= tolerance || remaining_iterations < 1) {
+            return;
+        }
     }
 }
