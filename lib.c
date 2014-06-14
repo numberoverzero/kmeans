@@ -51,12 +51,12 @@ void center_copy(struct center *dst, struct center *other)
 void center_accumulate(struct center *c, struct point *p)
 {
     /* Multiply by count since we're "expanding" the other point */
-    uint32_t c = p->count;
+    uint32_t count = p->count;
 
-    c->r += c * p->r;
-    c->g += c * p->g;
-    c->b += c * p->b;
-    c->count += c;
+    c->r += count * p->r;
+    c->g += count * p->g;
+    c->b += count * p->b;
+    c->count += count;
 }
 
 uint64_t center_center_distance(struct center *c1, struct center *c2)
