@@ -5,7 +5,7 @@ uint64_t max(uint64_t x, uint64_t y) { return x > y ? x : y; }
 
 struct point {
     uint8_t r, g, b;
-    uint32_t center;
+    uint8_t center;
     uint32_t count;
 };
 
@@ -16,7 +16,7 @@ struct center {
 };
 
 
-void centers_zero(struct center *centers, uint32_t n)
+void centers_zero(struct center *centers, uint8_t n)
 {
     for (uint32_t i = 0; i < n; i++) {
         centers[i].r = 0;
@@ -78,13 +78,13 @@ uint64_t point_center_distance(struct point *p, struct center *c)
 
 void kmeans_assign(
     struct point *points, uint64_t npoints,
-    struct center *centers, uint32_t ncenters)
+    struct center *centers, uint8_t ncenters)
 {
 
     for (uint64_t i = 0; i < npoints; ++i) {
         uint64_t min_dist = UINT64_MAX;
 
-        for (uint32_t j = 0; j < ncenters; ++j) {
+        for (uint8_t j = 0; j < ncenters; ++j) {
             uint64_t dist =
                 point_center_distance(&points[i], &centers[j]);
             if (dist < min_dist) {
@@ -98,9 +98,9 @@ void kmeans_assign(
 uint64_t kmeans_update(
     struct point *points, uint64_t npoints,
     struct center *centers, struct center *temp_centers,
-    uint32_t ncenters)
+    uint8_t ncenters)
 {
-    uint32_t j;
+    uint8_t j;
     uint64_t diff = 0;
 
     centers_zero(temp_centers, ncenters);
@@ -122,7 +122,7 @@ uint64_t kmeans_update(
 
 void kmeans(
     struct point *points, uint64_t npoints,
-    struct center *centers, uint32_t ncenters,
+    struct center *centers, uint8_t ncenters,
     uint32_t tolerance, uint32_t max_iterations)
 {
     uint32_t delta, remaining_iterations;
@@ -146,5 +146,6 @@ void kmeans(
         if (diff <= tolerance || remaining_iterations < 1) {
             return;
         }
+        printf("%zu\n", diff);
     }
 }

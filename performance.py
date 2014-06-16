@@ -88,7 +88,7 @@ def main():
         (1095169, 5),  # Unique pixels in 15530 x 8591 image
 
         # Max unique pixels in rgb 256 image
-        (16581375, 5)
+        #(16581375, 5)
     ]
 
     max_sample = max(sample[0] for sample in samples)
