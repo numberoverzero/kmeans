@@ -37,10 +37,10 @@ Limitations
 
 All values must be non-negative integers, with the following restrictions::
 
-    r, g, b        [0, 255]             (uint8_t)
-    count          [0, 4294967295]      (uint32_t)
-    maximum points 18446744073709551615 (uint64_t)
-    maximum means  256                  (uint8_t)
+    r, g, b        [0, 255]        (uint8_t)
+    count          [0, 4294967295] (uint32_t)
+    maximum points 4294967296      (uint32_t)
+    maximum means  256             (uint8_t)
 
 
 Inspiration

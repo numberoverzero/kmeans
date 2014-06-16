@@ -77,7 +77,7 @@ uint64_t point_center_distance(struct point *p, struct center *c)
 
 
 void kmeans_assign(
-    struct point *points, uint64_t npoints,
+    struct point *points, uint32_t npoints,
     struct center *centers, uint8_t ncenters)
 {
 
@@ -121,7 +121,7 @@ uint64_t kmeans_update(
 }
 
 void kmeans(
-    struct point *points, uint64_t npoints,
+    struct point *points, uint32_t npoints,
     struct center *centers, uint8_t ncenters,
     uint32_t tolerance, uint32_t max_iterations)
 {
