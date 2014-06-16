@@ -37,7 +37,7 @@ class Point(Structure):
         ('g', c_uint, 8),
         ('b', c_uint, 8),
         ('center', c_uint, 8),
-        ('count', c_uint, 16)
+        ('count', c_uint, 32)
     ]
 
 
