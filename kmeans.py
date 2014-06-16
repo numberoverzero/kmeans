@@ -12,7 +12,7 @@ import random
 import sysconfig
 from ctypes import Structure, c_uint, c_ulong, byref
 
-__version__ = version = '0.3.1'
+__version__ = version = '0.3.2'
 __all__ = ['kmeans', 'version']
 lib = None
 
@@ -36,8 +36,8 @@ class Point(Structure):
         ('r', c_uint, 8),
         ('g', c_uint, 8),
         ('b', c_uint, 8),
-        ('center', c_uint, 32),
-        ('count', c_uint, 32)
+        ('center', c_uint, 8),
+        ('count', c_uint, 16)
     ]
 
 
@@ -64,12 +64,10 @@ def _kmeans(*, points, k, centers, tolerance, max_iterations):
     else:
         centers = random.sample(points, k)
 
-    pcenters = (Center * k)()
+    results = pcenters = (Center * k)()
     for i, center in enumerate(centers):
         (r, g, b), count = center
         pcenters[i] = Center(r=r, g=g, b=b, count=count)
-                        # Save a reference to the array so we can read out
-    centers = pcenters  # the results
     pcenters = byref(pcenters)
 
     # Generate points
@@ -84,7 +82,7 @@ def _kmeans(*, points, k, centers, tolerance, max_iterations):
     lib.kmeans(ppoints, n, pcenters, k, tolerance, max_iterations)
 
     # Translate
-    return [[center.r, center.g, center.b] for center in centers]
+    return [[result.r, result.g, result.b] for result in results]
 
 
 def kmeans(points, k, centers=None, tolerance=1, max_iterations=0):
