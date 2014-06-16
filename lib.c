@@ -51,7 +51,7 @@ void center_copy(struct center *dst, struct center *other)
 void center_accumulate(struct center *c, struct point *p)
 {
     /* Multiply by count since we're "expanding" the other point */
-    uint16_t count = p->count;
+    uint32_t count = p->count;
 
     c->r += count * p->r;
     c->g += count * p->g;
@@ -123,7 +123,7 @@ uint64_t kmeans_update(
 void kmeans(
     struct point *points, uint32_t npoints,
     struct center *centers, uint8_t ncenters,
-    uint32_t tolerance, uint32_t max_iterations)
+    uint16_t tolerance, uint16_t max_iterations)
 {
     uint16_t delta, remaining_iterations;
     struct center temp_centers[ncenters];

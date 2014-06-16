@@ -41,6 +41,8 @@ All values must be non-negative integers, with the following restrictions::
     count          [0, 4294967295] (uint32_t)
     maximum points 4294967296      (uint32_t)
     maximum means  256             (uint8_t)
+    max iterations 65536           (uint16_t)
+    max tolerance  65536           (uint16_t)
 
 
 Inspiration
