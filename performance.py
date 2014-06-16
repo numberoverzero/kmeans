@@ -106,6 +106,7 @@ def main():
         return elapsed
 
     for n, k in samples:
+        print("Running test: {} points, {} centers".format(n, k))
         elapsed = run_test(n, k)
         print("N {:9} || K {:3} || E {}".format(n, k, elapsed))
 
