@@ -18,7 +18,7 @@ struct center {
 
 void centers_zero(struct center *centers, uint8_t n)
 {
-    for (uint32_t i = 0; i < n; i++) {
+    for (uint8_t i = 0; i < n; i++) {
         centers[i].r = 0;
         centers[i].g = 0;
         centers[i].b = 0;
@@ -146,6 +146,5 @@ void kmeans(
         if (diff <= tolerance || remaining_iterations < 1) {
             return;
         }
-        printf("%zu\n", diff);
     }
 }
