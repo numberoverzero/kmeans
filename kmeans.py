@@ -50,7 +50,7 @@ class Center(Structure):
     ]
 
 
-def _kmeans(*, points, k, centers, tolerance, max_iterations):
+def _kmeans(points, k, centers, tolerance, max_iterations):
     # Load c module
     global lib
     if not lib:

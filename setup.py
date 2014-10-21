@@ -3,24 +3,14 @@ import kmeans
 from setuptools import setup
 from distutils.extension import Extension
 
-here = os.path.abspath(os.path.dirname(__file__))
+HERE = os.path.abspath(os.path.dirname(__file__))
+README = open(os.path.join(HERE, 'README.rst')).read()
 ckmeans = Extension(
     'lib',
     sources=['lib.c'],
-    extra_compile_args=['-O3', '-std=c99']
+    extra_compile_args=['-Wno-error=declaration-after-statement',
+                        '-O3', '-std=c99']
 )
-
-
-def read(*filenames, **kwargs):
-    encoding = kwargs.get('encoding', 'utf-8')
-    sep = kwargs.get('sep', '\n\n')
-    contents = []
-    for filename in filenames:
-        with open(filename, encoding=encoding) as f:
-            contents.append(f.read())
-    return sep.join(contents)
-
-long_description = read('README.rst', 'LICENSE')
 
 
 setup(
@@ -32,7 +22,7 @@ setup(
     install_requires=[],
     author_email='joe.mcross@gmail.com',
     description='python wrapper for basic c implementation of kmeans',
-    long_description=long_description,
+    long_description=README,
     include_package_data=True,
     platforms='any',
     classifiers=[
@@ -47,5 +37,6 @@ setup(
     extras_require={
         'testing': ['pytest'],
     },
+    py_modules=['kmeans'],
     ext_modules=[ckmeans]
 )
