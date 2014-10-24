@@ -22,7 +22,7 @@ CKMEANS = Extension(
 
 setup(
     name='kmeans',
-    version='1.0.0',
+    version='1.0.1',
     url='http://github.com/numberoverzero/kmeans/',
     license='MIT',
     author='Joe Cross',
