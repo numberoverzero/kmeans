@@ -1,7 +1,8 @@
 language: python
-python:
-    - "3.4"
+env:
+    - TOXENV=py27
+    - TOXENV=py34
 install:
-    - "pip install --use-mirrors"
+    - pip install tox
 script:
-    - "python setup.py test"
+    - tox -e $TOXENV
