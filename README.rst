@@ -5,6 +5,10 @@ kmeans
 
 python wrapper for a basic c implementation of the k-means algorithm.
 
+**Please review the limitations before using in any capacity where strict
+accuracy is required.  There is no overflow detection, and negatives are not
+supported.  tuple values cannot exceed 255.**
+
 Installation
 ===================
 ::
@@ -18,7 +22,8 @@ Usage
     import kmeans
     means = kmeans.kmeans(points, k)
 
-``points`` should be a list of tuples of the form ``(data, weight)`` where ``data`` is a list with length 3.
+``points`` should be a list of tuples of the form ``(data, weight)`` where
+``data`` is a list with length 3.
 
 For example, finding four mean colors for a group of pixels::
 
@@ -30,12 +35,14 @@ For example, finding four mean colors for a group of pixels::
 
     centers = kmeans.kmeans(pixels, 4)
 
-In this case, the weights passed in may be the frequency of the pixels occuring in an image, or some preference to pull the means towards a color.
+In this case, the weights passed in may be the frequency of the pixels occuring
+in an image, or some preference to pull the means towards a color.
 
 Limitations
 ===================
 
-All values must be non-negative integers, with the following restrictions::
+All values must be **non-negative** **integers**, with the following
+restrictions::
 
     r, g, b        [0, 255]        (uint8_t)
     count          [0, 4294967295] (uint32_t)
@@ -50,4 +57,6 @@ Inspiration
 
 http://charlesleifer.com/blog/using-python-to-generate-awesome-linux-desktop-themes/
 
-I wanted to apply the implementation there to images much larger than 200x200.  Running a 4k x 3k image was approaching 60 seconds on a nice computer, so I decided to rewrite the kmeans implementation in c.
+I wanted to apply the implementation there to images much larger than 200x200.
+Running a 4k x 3k image was approaching 60 seconds on a nice computer, so I
+decided to rewrite the kmeans implementation in c.
