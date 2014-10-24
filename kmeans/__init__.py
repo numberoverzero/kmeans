@@ -11,24 +11,20 @@ import ctypes
 import random
 import sysconfig
 from ctypes import Structure, c_uint, c_ulong, byref
+__all__ = ['kmeans']
 
-__version__ = version = '0.3.2'
-__all__ = ['kmeans', 'version']
-lib = None
+# ====================================================
+# Hook up c module
+HERE = os.path.dirname(os.path.realpath(__file__))
+'''http://www.python.org/dev/peps/pep-3149/'''
+SUFFIX = sysconfig.get_config_var('SO')
+if not SUFFIX:
+    SOABI = sysconfig.get_config_var('SOABI')
+    SUFFIX = ".{}.so".format(SOABI)
 
-
-def so_path(dir, filename):
-    '''http://www.python.org/dev/peps/pep-3149/'''
-    suffix = sysconfig.get_config_var('SO')
-    if not suffix:
-        soabi = sysconfig.get_config_var('SOABI')
-        suffix = ".{}.so".format(soabi)
-    return os.path.join(dir, filename + suffix)
-
-
-def here(__file__):
-    '''Absolute directory of a script given its __file__ value'''
-    return os.path.dirname(os.path.realpath(__file__))
+SO_PATH = os.path.join(HERE, 'lib' + SUFFIX)
+LIB = ctypes.CDLL(SO_PATH)
+# ====================================================
 
 
 class Point(Structure):
@@ -51,11 +47,6 @@ class Center(Structure):
 
 
 def _kmeans(points, k, centers, tolerance, max_iterations):
-    # Load c module
-    global lib
-    if not lib:
-        _here = here(__file__)
-        lib = ctypes.CDLL(so_path(_here, 'lib'))
 
     if centers:
         if k != len(centers):
@@ -79,7 +70,7 @@ def _kmeans(points, k, centers, tolerance, max_iterations):
     ppoints = byref(ppoints)
 
     # Compute centers
-    lib.kmeans(ppoints, n, pcenters, k, tolerance, max_iterations)
+    LIB.kmeans(ppoints, n, pcenters, k, tolerance, max_iterations)
 
     # Translate
     return [[result.r, result.g, result.b] for result in results]

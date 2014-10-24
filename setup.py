@@ -1,21 +1,28 @@
 import os
-import kmeans
-from setuptools import setup
+from setuptools import setup, find_packages
 from distutils.extension import Extension
 
 HERE = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(HERE, 'README.rst')).read()
-ckmeans = Extension(
-    'lib',
-    sources=['lib.c'],
+CKMEANS = Extension(
+    'kmeans/lib',
+    sources=['kmeans/lib.c'],
     extra_compile_args=['-Wno-error=declaration-after-statement',
                         '-O3', '-std=c99']
 )
 
+# The packaging is a little wonky.  I've been fighting with tox to try to
+# load the dll from the correct relative path, but
+# kmeans.__init__:os.path.dirname(os.path.realpath(__file__)) just
+# refuses to point anywhere BUT the .tox path.
+
+# To get over that, I moved everything under the kmeans/ folder and for now,
+# if it works that's cool.  It's not clean and I don't like it, but it's also
+# 1:30 am
 
 setup(
     name='kmeans',
-    version=kmeans.version,
+    version='1.0.0',
     url='http://github.com/numberoverzero/kmeans/',
     license='MIT',
     author='Joe Cross',
@@ -27,16 +34,14 @@ setup(
     platforms='any',
     classifiers=[
         'Programming Language :: Python',
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 5 - Production/Stable',
         'Natural Language :: English',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Topic :: Software Development :: Libraries :: Python Modules',
         ],
-    extras_require={
-        'testing': ['pytest'],
-    },
     py_modules=['kmeans'],
-    ext_modules=[ckmeans]
+    packages=find_packages(exclude=('tests',)),
+    ext_modules=[CKMEANS]
 )

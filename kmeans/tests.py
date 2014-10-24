@@ -14,7 +14,7 @@ def test_single_point():
 
 def test_single_point_with_guess():
     value = [0, 10, 20]
-    guess = [(-20, 50, 100), 1]
+    guess = [(20, 50, 100), 1]
     points = [
         [value, 1]
     ]
@@ -42,7 +42,7 @@ def test_two_points():
 def test_two_points_two_centers():
     values = [
         [0, 10, 20],
-        [-100, -400, -1600]
+        [100, 144, 64]
     ]
     points = [
         [value, 1] for value in values
