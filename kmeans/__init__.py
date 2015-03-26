@@ -10,7 +10,7 @@ import os
 import ctypes
 import random
 import sysconfig
-from ctypes import Structure, c_uint, c_ulong, byref
+from ctypes import Structure, c_uint8, c_uint32, c_uint64, byref
 __all__ = ['kmeans']
 
 # ====================================================
@@ -18,7 +18,7 @@ __all__ = ['kmeans']
 HERE = os.path.dirname(os.path.realpath(__file__))
 '''http://www.python.org/dev/peps/pep-3149/'''
 SUFFIX = sysconfig.get_config_var('SO')
-if not SUFFIX:
+if not SUFFIX:  # pragma: no cover
     SOABI = sysconfig.get_config_var('SOABI')
     SUFFIX = ".{}.so".format(SOABI)
 
@@ -29,20 +29,20 @@ LIB = ctypes.CDLL(SO_PATH)
 
 class Point(Structure):
     _fields_ = [
-        ('r', c_uint, 8),
-        ('g', c_uint, 8),
-        ('b', c_uint, 8),
-        ('center', c_uint, 8),
-        ('count', c_uint, 32)
+        ('r', c_uint8),
+        ('g', c_uint8),
+        ('b', c_uint8),
+        ('center', c_uint8),
+        ('count', c_uint32)
     ]
 
 
 class Center(Structure):
     _fields_ = [
-        ('r', c_ulong, 64),
-        ('g', c_ulong, 64),
-        ('b', c_ulong, 64),
-        ('count', c_uint, 32)
+        ('r', c_uint64),
+        ('g', c_uint64),
+        ('b', c_uint64),
+        ('count', c_uint32)
     ]
 
 

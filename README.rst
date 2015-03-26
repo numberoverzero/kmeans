@@ -60,3 +60,10 @@ http://charlesleifer.com/blog/using-python-to-generate-awesome-linux-desktop-the
 I wanted to apply the implementation there to images much larger than 200x200.
 Running a 4k x 3k image was approaching 60 seconds on a nice computer, so I
 decided to rewrite the kmeans implementation in c.
+
+Contributors
+===================
+
+* chinatsu_ - 32bit compatibility
+
+.. _chinatsu: https://github.com/chinatsu

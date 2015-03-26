@@ -3,8 +3,9 @@ from setuptools import setup, find_packages
 from distutils.extension import Extension
 
 HERE = os.path.abspath(os.path.dirname(__file__))
-README = open(os.path.join(HERE, 'README.rst')).read()
-CKMEANS = Extension(
+with open(os.path.join(HERE, 'README.rst')) as readme_file:
+    README = readme_file.read()
+C_KMEANS = Extension(
     'kmeans/lib',
     sources=['kmeans/lib.c'],
     extra_compile_args=['-Wno-error=declaration-after-statement',
@@ -22,7 +23,7 @@ CKMEANS = Extension(
 
 setup(
     name='kmeans',
-    version='1.0.1',
+    version='1.0.2',
     url='http://github.com/numberoverzero/kmeans/',
     license='MIT',
     author='Joe Cross',
@@ -41,7 +42,6 @@ setup(
         'Operating System :: OS Independent',
         'Topic :: Software Development :: Libraries :: Python Modules',
         ],
-    py_modules=['kmeans'],
     packages=find_packages(exclude=('tests',)),
-    ext_modules=[CKMEANS]
+    ext_modules=[C_KMEANS]
 )
